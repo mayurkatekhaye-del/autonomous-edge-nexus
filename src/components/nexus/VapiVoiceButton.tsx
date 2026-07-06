@@ -139,8 +139,12 @@ export function VapiVoiceButton() {
       }
     })();
 
+    const onExternalStart = () => startCall();
+    window.addEventListener("nexus:start-call", onExternalStart);
+
     return () => {
       cancelled = true;
+      window.removeEventListener("nexus:start-call", onExternalStart);
       try {
         vapiRef.current?.stop();
       } catch {

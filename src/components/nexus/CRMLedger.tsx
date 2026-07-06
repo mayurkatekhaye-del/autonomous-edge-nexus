@@ -90,6 +90,9 @@ export function CRMLedger() {
                       </button>
                     ) : (
                       <button
+                        onClick={() =>
+                          window.dispatchEvent(new CustomEvent("nexus:start-call", { detail: { name: r.name } }))
+                        }
                         className={`relative inline-flex items-center gap-2 rounded-md bg-indigo-500 hover:bg-indigo-400 text-white px-3 py-2 text-xs font-semibold transition-all shadow-[0_0_20px_-4px_rgba(99,102,241,0.6)] ${
                           r.risk === "critical" ? "pulse-ring" : ""
                         }`}
