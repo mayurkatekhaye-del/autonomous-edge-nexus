@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { Mic, PhoneOff, Loader2 } from "lucide-react";
-import Vapi from "@vapi-ai/web";
 
 const PUBLIC_KEY = "5636c4fb-627d-47e7-a61e-ec15f064b7dc";
 const ASSISTANT_ID = "72c0f3b4-4297-4e89-9ac8-e8eb798e9367";
@@ -8,35 +7,45 @@ const ASSISTANT_ID = "72c0f3b4-4297-4e89-9ac8-e8eb798e9367";
 type Status = "idle" | "connecting" | "connected" | "listening";
 
 export function VapiVoiceButton() {
-  const vapiRef = useRef<Vapi | null>(null);
+  const vapiRef = useRef<any>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [volume, setVolume] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const vapi = new Vapi(PUBLIC_KEY);
-    vapiRef.current = vapi;
-
-    vapi.on("call-start", () => setStatus("connected"));
-    vapi.on("call-end", () => {
-      setStatus("idle");
-      setVolume(0);
-    });
-    vapi.on("speech-start", () => setStatus("listening"));
-    vapi.on("speech-end", () => setStatus("connected"));
-    vapi.on("volume-level", (v: number) => setVolume(v));
-    vapi.on("error", (e: unknown) => {
-      console.error("Vapi error:", e);
-      setStatus("idle");
-    });
+    setMounted(true);
+    let cancelled = false;
+    (async () => {
+      const mod = await import("@vapi-ai/web");
+      if (cancelled) return;
+      const Vapi = mod.default;
+      const vapi = new Vapi(PUBLIC_KEY);
+      vapiRef.current = vapi;
+      vapi.on("call-start", () => setStatus("connected"));
+      vapi.on("call-end", () => {
+        setStatus("idle");
+        setVolume(0);
+      });
+      vapi.on("speech-start", () => setStatus("listening"));
+      vapi.on("speech-end", () => setStatus("connected"));
+      vapi.on("volume-level", (v: number) => setVolume(v));
+      vapi.on("error", (e: unknown) => {
+        console.error("Vapi error:", e);
+        setStatus("idle");
+      });
+    })().catch((e) => console.error("Vapi load failed", e));
 
     return () => {
+      cancelled = true;
       try {
-        vapi.stop();
+        vapiRef.current?.stop();
       } catch {
         /* noop */
       }
     };
   }, []);
+
+  if (!mounted) return null;
 
   const active = status !== "idle";
 
