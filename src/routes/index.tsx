@@ -14,6 +14,7 @@ export const Route = createFileRoute("/")({
 function Dashboard() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <VapiVoiceButton />
       <Sidebar />
 
       <main className="md:pl-72">
