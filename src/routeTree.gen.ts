@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TelephonyRouteImport } from './routes/telephony'
 import { Route as KnowledgeRouteImport } from './routes/knowledge'
 import { Route as CrmRouteImport } from './routes/crm'
 import { Route as IndexRouteImport } from './routes/index'
 
+const TelephonyRoute = TelephonyRouteImport.update({
+  id: '/telephony',
+  path: '/telephony',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const KnowledgeRoute = KnowledgeRouteImport.update({
   id: '/knowledge',
   path: '/knowledge',
@@ -33,34 +39,45 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/knowledge': typeof KnowledgeRoute
+  '/telephony': typeof TelephonyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/knowledge': typeof KnowledgeRoute
+  '/telephony': typeof TelephonyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/crm': typeof CrmRoute
   '/knowledge': typeof KnowledgeRoute
+  '/telephony': typeof TelephonyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/crm' | '/knowledge'
+  fullPaths: '/' | '/crm' | '/knowledge' | '/telephony'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/crm' | '/knowledge'
-  id: '__root__' | '/' | '/crm' | '/knowledge'
+  to: '/' | '/crm' | '/knowledge' | '/telephony'
+  id: '__root__' | '/' | '/crm' | '/knowledge' | '/telephony'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CrmRoute: typeof CrmRoute
   KnowledgeRoute: typeof KnowledgeRoute
+  TelephonyRoute: typeof TelephonyRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/telephony': {
+      id: '/telephony'
+      path: '/telephony'
+      fullPath: '/telephony'
+      preLoaderRoute: typeof TelephonyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/knowledge': {
       id: '/knowledge'
       path: '/knowledge'
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CrmRoute: CrmRoute,
   KnowledgeRoute: KnowledgeRoute,
+  TelephonyRoute: TelephonyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
