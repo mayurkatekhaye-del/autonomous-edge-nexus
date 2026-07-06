@@ -5,6 +5,7 @@ import { MetricCard } from "@/components/nexus/MetricCard";
 import { HealthRing } from "@/components/nexus/HealthRing";
 import { DiagnosticsPane } from "@/components/nexus/DiagnosticsPane";
 import { CRMLedger } from "@/components/nexus/CRMLedger";
+import { VapiVoiceButton } from "@/components/nexus/VapiVoiceButton";
 
 export const Route = createFileRoute("/")({
   component: Dashboard,
